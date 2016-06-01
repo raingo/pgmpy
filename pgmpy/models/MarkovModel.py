@@ -499,6 +499,9 @@ class MarkovModel(UndirectedGraph):
         # Dictionary stating whether the factor is used to create clique
         # potential or not
         # If false, then it is not used to create any clique potential
+        if len(self.factors) == 0:
+            return clique_trees
+
         is_used = {factor: False for factor in self.factors}
 
         for node in clique_trees.nodes():
