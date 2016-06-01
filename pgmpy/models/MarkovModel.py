@@ -438,7 +438,7 @@ class MarkovModel(UndirectedGraph):
                 graph_copy.add_edge(edge[0], edge[1])
             return graph_copy
 
-    def to_junction_tree(self):
+    def to_junction_tree(self, order=None):
         """
         Creates a junction tree (or clique tree) for a given markov model.
 
@@ -466,7 +466,7 @@ class MarkovModel(UndirectedGraph):
         self.check_model()
 
         # Triangulate the graph to make it chordal
-        triangulated_graph = self.triangulate()
+        triangulated_graph = self.triangulate(order=order)
 
         # Find maximal cliques in the chordal graph
         cliques = list(map(tuple, nx.find_cliques(triangulated_graph)))
