@@ -273,7 +273,7 @@ class Factor(object):
         phi.variables = [phi.variables[index] for index in index_to_keep]
         phi.cardinality = phi.cardinality[index_to_keep]
 
-        phi.values = np.sum(phi.values, axis=tuple(var_indexes))
+        phi.values = phi.values.sum(axis=tuple(var_indexes))
 
         if not inplace:
             return phi
@@ -328,7 +328,7 @@ class Factor(object):
         phi.variables = [phi.variables[index] for index in index_to_keep]
         phi.cardinality = phi.cardinality[index_to_keep]
 
-        phi.values = np.max(phi.values, axis=tuple(var_indexes))
+        phi.values = phi.values.max(axis=tuple(var_indexes))
 
         if not inplace:
             return phi
@@ -781,7 +781,7 @@ class Factor(object):
 
             if phi.values.shape != self.values.shape:
                 return False
-            elif not np.allclose(phi.values, self.values):
+            elif not (phi.values - self.values).sum()/phi.values.size < 1e-6:
                 return False
             elif not all(self.cardinality == phi.cardinality):
                 return False
