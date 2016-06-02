@@ -435,7 +435,7 @@ class BeliefPropagation(Inference):
         nodes = self.junction_tree.nodes()
         root = nodes[np.random.choice(len(nodes),1)[0]]
 
-        edges = list(nx.algorithms.breadth_first_search(self, junction_tree, clique))
+        edges = list(nx.algorithms.breadth_first_searc.bfs_edgesh(self.junction_tree, root))
 
         # upward
         for edge in reversed(edges):
