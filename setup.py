@@ -26,5 +26,6 @@ setup(
         "numpy >= 1.7.0",
         "nose >= 1.3.0",
         "coveralls >= 0.4"
+        "pandas >= 0.18.1"
     ],
 )
