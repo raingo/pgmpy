@@ -105,6 +105,11 @@ class Factor(object):
         else:
             self.numpy = False
 
+        if self.numpy:
+            self.is_close = np.allclose
+        else:
+            self.is_close = lambda a, b: a.is_close(b)
+
         if values.dtype != int and values.dtype != float:
             raise TypeError("Values: Expected type int or type float, got ", values.dtype)
 
@@ -789,7 +794,7 @@ class Factor(object):
 
             if phi.values.shape != self.values.shape:
                 return False
-            elif not (phi.values - self.values).sum()/phi.values.size < 1e-6:
+            elif not self.is_close(phi.values,  self.values):
                 return False
             elif not all(self.cardinality == phi.cardinality):
                 return False
