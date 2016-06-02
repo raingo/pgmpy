@@ -705,7 +705,7 @@ class Factor(object):
         """
         # not creating a new copy of self.values and self.cardinality
         # because __init__ methods does that.
-        return Factor(self.scope(), self.cardinality, self.values)
+        return Factor(self.scope(), self.cardinality, self.values.copy())
 
     def __str__(self):
         if six.PY2:
