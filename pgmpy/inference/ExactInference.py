@@ -432,10 +432,7 @@ class BeliefPropagation(Inference):
                                for clique in self.junction_tree.nodes()}
         self.sepset_beliefs = {frozenset(edge): None for edge in self.junction_tree.edges()}
 
-        nodes = self.junction_tree.nodes()
-        root = nodes[np.random.choice(len(nodes),1)[0]]
-
-        edges = list(nx.algorithms.breadth_first_search.bfs_edges(self.junction_tree, root))
+        edges = list(nx.algorithms.breadth_first_search.bfs_edges(self.junction_tree))
 
         # upward
         for edge in reversed(edges):
