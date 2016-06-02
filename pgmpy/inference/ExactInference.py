@@ -444,8 +444,7 @@ class BeliefPropagation(Inference):
                 # downward pass
                 for idx, edge in enumerate(bfs_edges):
                     self._update_beliefs(edge[0], edge[1], operation=operation)
-                    if idx % 100 == 0:
-                        print idx
+                    print idx
             else:
                 break
 
