@@ -442,8 +442,10 @@ class BeliefPropagation(Inference):
                 bfs_edges = nx.algorithms.breadth_first_search.bfs_edges(self.junction_tree, clique)
                 # update the beliefs of all the nodes starting from the root to leaves using root's belief
                 # downward pass
-                for edge in bfs_edges:
+                for idx, edge in enumerate(bfs_edges):
                     self._update_beliefs(edge[0], edge[1], operation=operation)
+                    if idx % 100 == 0:
+                        print idx
             else:
                 break
 
