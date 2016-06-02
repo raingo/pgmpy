@@ -3,6 +3,7 @@ from __future__ import division
 from itertools import product
 
 from collections import namedtuple
+import collections
 
 import numpy as np
 
@@ -96,8 +97,9 @@ class Factor(object):
         if isinstance(variables, six.string_types):
             raise TypeError("Variables: Expected type list or array like, got string")
 
-        if isinstance(values, list):
+        if isinstance(values, collections.Iterable):
             values = np.array(values)
+            self.numpy = True
         elif isinstance(values, np.ndarray):
             self.numpy = True
         else:
