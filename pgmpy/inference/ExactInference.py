@@ -432,7 +432,15 @@ class BeliefPropagation(Inference):
                                for clique in self.junction_tree.nodes()}
         self.sepset_beliefs = {frozenset(edge): None for edge in self.junction_tree.edges()}
 
-        edges = list(nx.algorithms.breadth_first_search.bfs_edges(self.junction_tree))
+        nodes = self.junction_tree.nodes()
+        root = nodes[np.random.choice(len(nodes),1)[0]]
+
+        edges = list(nx.algorithms.breadth_first_search.bfs_edges(self.junction_tree, root))
+        nodes_ = []
+        for edge in edges:
+            nodes_.append(edge[0])
+            nodes_.append(edge[1])
+        assert set(nodes) == set(nodes_), 'tree disconnected'
 
         # upward
         for edge in reversed(edges):
