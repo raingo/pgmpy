@@ -96,7 +96,12 @@ class Factor(object):
         if isinstance(variables, six.string_types):
             raise TypeError("Variables: Expected type list or array like, got string")
 
-        values = np.array(values)
+        if isinstance(values, list):
+            values = np.array(values)
+        elif isinstance(values, np.ndarray):
+            self.numpy = True
+        else:
+            self.numpy = False
 
         if values.dtype != int and values.dtype != float:
             raise TypeError("Values: Expected type int or type float, got ", values.dtype)
@@ -665,7 +670,8 @@ class Factor(object):
 
         # If factor division 0/0 = 0 but is undefined for x/0. In pgmpy we are using
         # np.inf to represent x/0 cases.
-        phi.values[np.isnan(phi.values)] = 0
+        if phi.numpy:
+            phi.values[np.isnan(phi.values)] = 0
 
         if not inplace:
             return phi
