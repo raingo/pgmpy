@@ -432,6 +432,24 @@ class BeliefPropagation(Inference):
                                for clique in self.junction_tree.nodes()}
         self.sepset_beliefs = {frozenset(edge): None for edge in self.junction_tree.edges()}
 
+        nodes = self.junction_tree.nodes()
+        root = nodes[np.random.choice(len(nodes),1)[0]]
+
+        edges = list(nx.algorithms.breadth_first_search(self, junction_tree, clique))
+
+        # upward
+        for edge in reversed(edges):
+            self._update_beliefs(edge[1], edge[0], operation=operation)
+
+        # downward
+        for edge in edges:
+            self._update_beliefs(edge[0], edge[1], operation=operation)
+
+        assert self._is_converged(operation=operation), \
+                "upward and downward is wrong!!!"
+
+        return
+
         for clique in self.junction_tree.nodes():
             if not self._is_converged(operation=operation):
                 neighbors = self.junction_tree.neighbors(clique)
