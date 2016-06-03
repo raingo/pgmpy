@@ -107,8 +107,10 @@ class Factor(object):
 
         if self.numpy:
             self.is_close = np.allclose
+            self.equal_size = lambda mat, shape: mat.size == np.product(shape)
         else:
             self.is_close = lambda a, b: a.is_close(b)
+            self.equal_size = lambda mat, shape: mat.compare_size(shape)
 
         if values.dtype != int and values.dtype != float:
             raise TypeError("Values: Expected type int or type float, got ", values.dtype)
@@ -116,8 +118,7 @@ class Factor(object):
         if len(cardinality) != len(variables):
             raise ValueError("Number of elements in cardinality must be equal to number of variables")
 
-        # if #variables is too big, the np.product may overflow
-        if len(cardinality) < 30 and values.size != np.product(cardinality):
+        if not self.equal_size(values, cardinality):
             raise ValueError("Values array must be of size: {size}".format(size=np.product(cardinality)))
 
         if len(set(variables)) != len(variables):
