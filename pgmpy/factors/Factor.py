@@ -116,7 +116,8 @@ class Factor(object):
         if len(cardinality) != len(variables):
             raise ValueError("Number of elements in cardinality must be equal to number of variables")
 
-        if values.size != np.product(cardinality):
+        # if #variables is too big, the np.product may overflow
+        if len(cardinality) < 30 and values.size != np.product(cardinality):
             raise ValueError("Values array must be of size: {size}".format(size=np.product(cardinality)))
 
         if len(set(variables)) != len(variables):
