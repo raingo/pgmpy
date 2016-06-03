@@ -33,7 +33,7 @@ class TestClusterGraphCreation(unittest.TestCase):
         A = ('a', 'b')
         B = ('c', 'd')
         self.graph.add_edge(A, B)
-        assert not self.graph.has_edge(A, B)
+        self.assertFalse(self.graph.has_edge(A, B))
 
     def tearDown(self):
         del self.graph

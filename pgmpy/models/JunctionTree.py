@@ -91,7 +91,8 @@ class JunctionTree(ClusterGraph):
         check: boolean
             True if all the checks are passed
         """
-        if not nx.is_connected(self):
+        if False and not nx.is_connected(self):
+            # bypass this check, because we should allow disconnected
             raise ValueError('The Junction Tree defined is not fully connected.')
 
         return super(JunctionTree, self).check_model()
