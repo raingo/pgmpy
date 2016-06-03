@@ -120,7 +120,11 @@ class ClusterGraph(UndirectedGraph):
         set_u = set(u)
         set_v = set(v)
         if set_u.isdisjoint(set_v):
-            raise ValueError('No sepset found between these two edges.')
+            #raise ValueError('No sepset found between these two edges.')
+            # this could be because of disconnected graph, just isgnore this edge
+            self.add_node(u)
+            self.add_node(v)
+            return
 
         super(ClusterGraph, self).add_edge(u, v)
 
