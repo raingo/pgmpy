@@ -526,12 +526,7 @@ class Factor(object):
                 # No need to modify cardinality as we don't need it.
 
             # rearranging the axes of phi1 to match phi
-            for axis in range(phi.values.ndim):
-                exchange_index = phi1.variables.index(phi.variables[axis])
-                phi1.variables[axis], phi1.variables[exchange_index] = phi1.variables[exchange_index], \
-                    phi1.variables[axis]
-                phi1.values = phi1.values.swapaxes(axis, exchange_index)
-
+            phi1.reorder_axes(phi.variables, with_card=False)
             phi.values = phi.values + phi1.values
 
         if not inplace:
@@ -610,11 +605,7 @@ class Factor(object):
                 # No need to modify cardinality as we don't need it.
 
             # rearranging the axes of phi1 to match phi
-            for axis in range(phi.values.ndim):
-                exchange_index = phi1.variables.index(phi.variables[axis])
-                phi1.variables[axis], phi1.variables[exchange_index] = phi1.variables[exchange_index], \
-                    phi1.variables[axis]
-                phi1.values = phi1.values.swapaxes(axis, exchange_index)
+            phi1.reorder_axes(phi.variables, with_card=False)
 
             phi.values = phi.values * phi1.values
 
@@ -670,11 +661,7 @@ class Factor(object):
             phi1.variables.extend(extra_vars)
 
         # Rearranging the axes of phi1 to match phi
-        for axis in range(phi.values.ndim):
-            exchange_index = phi1.variables.index(phi.variables[axis])
-            phi1.variables[axis], phi1.variables[exchange_index] = phi1.variables[exchange_index], phi1.variables[axis]
-            phi1.values = phi1.values.swapaxes(axis, exchange_index)
-
+        phi1.reorder_axes(phi.variables, with_card=False)
         phi.values = phi.values / phi1.values
 
         # If factor division 0/0 = 0 but is undefined for x/0. In pgmpy we are using
@@ -786,13 +773,7 @@ class Factor(object):
 
         else:
             phi = other.copy()
-            for axis in range(self.values.ndim):
-                exchange_index = phi.variables.index(self.variables[axis])
-                phi.variables[axis], phi.variables[exchange_index] = (phi.variables[exchange_index],
-                                                                      phi.variables[axis])
-                phi.cardinality[axis], phi.cardinality[exchange_index] = (phi.cardinality[exchange_index],
-                                                                          phi.cardinality[axis])
-                phi.values = phi.values.swapaxes(axis, exchange_index)
+            phi.reorder_axes(self.variables)
 
             if phi.values.shape != self.values.shape:
                 return False
@@ -806,18 +787,23 @@ class Factor(object):
     def __ne__(self, other):
         return not self.__eq__(other)
 
+    def reorder_axes(self, target, with_card=True):
+        for axis in range(self.values.ndim):
+            exchange_index = self.variables.index(target[axis])
+            def _swap(target):
+                target[axis], target[exchange_index] = target[exchange_index], target[axis]
+            if with_card:
+                _swap(self.cardinality)
+            _swap(self.variables)
+            self.values = self.values.swapaxes(axis, exchange_index)
+
     def __hash__(self):
-        variable_hashes = [hash(variable) for variable in self.variables]
-        sorted_var_hashes = sorted(variable_hashes)
+        sorted_vars = sorted(self.variables)
         phi = self.copy()
-        for axis in range(phi.values.ndim):
-            exchange_index = variable_hashes.index(sorted_var_hashes[axis])
-            variable_hashes[axis], variable_hashes[exchange_index] = (variable_hashes[exchange_index],
-                                                                      variable_hashes[axis])
-            phi.cardinality[axis], phi.cardinality[exchange_index] = (phi.cardinality[exchange_index],
-                                                                      phi.cardinality[axis])
-            phi.values = phi.values.swapaxes(axis, exchange_index)
-        return hash(str(sorted_var_hashes) + str(phi.values) + str(phi.cardinality))
+        phi.reorder_axes(sorted_vars)
+        variable_hashes = [hash(variable) for variable in phi.variables]
+        hash_str = str(variable_hashes) + str(phi.values) + str(phi.cardinality)
+        return hash(hash_str)
 
 
 def factor_product(*args):
