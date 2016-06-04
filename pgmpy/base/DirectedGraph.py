@@ -184,6 +184,7 @@ class DirectedGraph(nx.DiGraph):
         [('intel', 'grade'), ('intel', 'diff'), ('grade', 'diff')]
         """
         moral_graph = UndirectedGraph(self.to_undirected().edges())
+        moral_graph.add_nodes_from(self.nodes())
 
         for node in self.nodes():
             moral_graph.add_edges_from(itertools.combinations(self.get_parents(node), 2))
