@@ -438,7 +438,7 @@ class MarkovModel(UndirectedGraph):
                 graph_copy.add_edge(edge[0], edge[1])
             return graph_copy
 
-    def to_junction_tree(self, order=None):
+    def to_junction_tree(self, order=None, with_pot=True):
         """
         Creates a junction tree (or clique tree) for a given markov model.
 
@@ -499,7 +499,8 @@ class MarkovModel(UndirectedGraph):
         # Dictionary stating whether the factor is used to create clique
         # potential or not
         # If false, then it is not used to create any clique potential
-        if len(self.factors) == 0:
+        # without potential means only the junction tree structure is valid
+        if not with_pot:
             return clique_trees
 
         is_used = {factor: False for factor in self.factors}
